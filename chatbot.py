@@ -7,36 +7,40 @@ import time
 # 1. Configuración de la página
 st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
 
-# 2. Inyección de CSS para fondo blanco y textos oscuros (CORREGIDO)
+# 2. Inyección de CSS para fondo blanco y textos NEGROS INTENSOS
 st.markdown(
     """
     <style>
-    /* Fondo de la app */
+    /* Fondo principal */
     .stApp {
-        background-color: #ffffff;
+        background-color: #ffffff !important;
     }
     
-    /* Forzar color oscuro en TODO el texto: párrafos, listas, negritas, etc. */
-    .stApp p, .stApp li, .stApp span, .stApp label, .stApp h1, .stApp h2, .stApp h3 {
-        color: #1a1a1a !important;
+    /* Forzar negro en TODO tipo de texto y contenedores */
+    .stApp, .stApp p, .stApp li, .stApp span, .stApp label, .stApp div {
+        color: #000000 !important;
     }
 
-    /* Estilo específico para las listas (bullet points) */
-    ul li {
-        color: #1a1a1a !important;
+    /* Títulos en negro */
+    h1, h2, h3 {
+        color: #000000 !important;
     }
 
-    /* Caja de texto del usuario */
+    /* Arreglo específico para las listas (donde se ve el texto claro) */
+    ul, ol, li {
+        color: #000000 !important;
+    }
+
+    /* Asegurar que el texto dentro del markdown de respuesta sea negro */
+    .stMarkdown div p {
+        color: #000000 !important;
+    }
+
+    /* Caja de entrada de texto */
     .stTextInput input {
-        background-color: #f9f9f9 !important;
-        color: #1a1a1a !important;
-        border: 1px solid #cccccc !important;
-    }
-    
-    /* Contenedor de la respuesta de la IA */
-    .stMarkdown {
-        background-color: #ffffff;
-        color: #1a1a1a !important;
+        background-color: #f0f2f6 !important;
+        color: #000000 !important;
+        border: 2px solid #dcdcdc !important;
     }
     </style>
     """,
