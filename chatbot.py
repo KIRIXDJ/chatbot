@@ -5,7 +5,7 @@ from PyPDF2 import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain.chains import load_qa_chain
+from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 
 # --- CONFIGURACIÓN DE API ---
@@ -78,4 +78,5 @@ if user_question:
     else:
 
         st.warning("Primero sube y procesa los documentos en la barra lateral.")
+
 
