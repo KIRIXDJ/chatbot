@@ -25,10 +25,8 @@ def cargar_conocimiento_permanente():
                 except Exception as e:
                     st.error(f"Error leyendo {archivo}: {e}")
     
-    # LIMITADOR DE EMERGENCIA: 
-    # Si el texto es demasiado largo, lo recortamos para no quemar la cuota de 250k tokens.
-    # 500,000 caracteres son aprox 125,000 tokens (la mitad del límite por minuto).
-    return texto_base[:500000] 
+    # Mantenemos un límite alto pero seguro para evitar el error de cuota inmediato
+    return texto_base[:600000] 
 
 contexto_fijo = cargar_conocimiento_permanente()
 
@@ -41,25 +39,24 @@ if user_question:
     if not contexto_fijo:
         st.error("El bot no tiene información cargada.")
     else:
-        with st.spinner("Consultando a la IA..."):
+        with st.spinner("Buscando en los archivos de UNIROMANA..."):
             model = genai.GenerativeModel('gemini-2.5-flash')
-            # Reducimos un poco el prompt para ser más eficientes
-            prompt = f"Contexto: {contexto_fijo}\n\nPregunta: {user_question}\nRespuesta corta y precisa:"
             
-            exito = False
+            # REINSERTAMOS TU PROMPT ORIGINAL CON LA IDENTIDAD
+            prompt = f"Eres un asistente de UNIROMANA. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
+            
             intentos = 0
-            
-            while not exito and intentos < 3:
+            while intentos < 3:
                 try:
                     response = model.generate_content(prompt)
                     st.markdown("### Respuesta:")
                     st.write(response.text)
-                    exito = True
+                    break # Si tiene éxito, sale del bucle
                 except Exception as e:
                     if "429" in str(e):
                         intentos += 1
-                        st.warning(f"Límite de cuota alcanzado. Reintentando en 5 segundos... (Intento {intentos}/3)")
-                        time.sleep(5)
+                        st.warning(f"Límite de tokens alcanzado. Reintentando en 10 segundos... (Intento {intentos}/3)")
+                        time.sleep(10) # Espera un poco más para que la cuota se limpie
                     else:
-                        st.error(f"Error crítico: {e}")
+                        st.error(f"Error: {e}")
                         break
