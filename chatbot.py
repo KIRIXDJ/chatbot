@@ -7,22 +7,28 @@ import time
 # 1. Configuración de la página
 st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
 
-# 2. Inyección de CSS para el fondo oscuro (#0f0f0f) y texto blanco
+# 2. Inyección de CSS para fondo blanco y textos oscuros
 st.markdown(
     """
     <style>
     .stApp {
-        background-color: #0f0f0f;
+        background-color: #ffffff;
     }
-    /* Forzamos que los textos principales sean blancos para que se vean bien */
+    /* Aseguramos que los textos sean oscuros para buen contraste */
     h1, h2, h3, p, span, label {
-        color: #ffffff !important;
+        color: #1a1a1a !important;
     }
-    /* Estilo para el input de texto */
+    /* Estilo para la caja de texto */
     .stTextInput input {
-        background-color: #1e1e1e !important;
-        color: white !important;
-        border: 1px solid #333 !important;
+        background-color: #f9f9f9 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #cccccc !important;
+    }
+    /* Estilo para el área de respuesta */
+    .stMarkdown {
+        background-color: #fdfdfd;
+        padding: 10px;
+        border-radius: 5px;
     }
     </style>
     """,
@@ -49,7 +55,7 @@ def cargar_conocimiento_permanente():
                 except Exception as e:
                     st.error(f"Error leyendo {archivo}: {e}")
     
-    # Límite de seguridad para evitar error 429 inmediato
+    # Límite de seguridad para tokens (aprox 150k tokens)
     return texto_base[:600000] 
 
 contexto_fijo = cargar_conocimiento_permanente()
@@ -79,7 +85,7 @@ if user_question:
                 except Exception as e:
                     if "429" in str(e):
                         intentos += 1
-                        st.warning(f"Límite de cuota alcanzado. Reintentando en 10 segundos... (Intento {intentos}/3)")
+                        st.warning(f"Límite alcanzado. Reintentando en 10 segundos... (Intento {intentos}/3)")
                         time.sleep(10)
                     else:
                         st.error(f"Error: {e}")
