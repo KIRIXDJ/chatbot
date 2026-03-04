@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 import os
 
 st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
-st.title("📚 UNIROMANA AI-Hub")
+st.title("📚 UNIROMANA")
 
 # Conexión con Gemini 2.5 Flash
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -29,7 +29,7 @@ contexto_fijo = cargar_conocimiento_permanente()
 if not contexto_fijo:
     st.warning("⚠️ No encontré archivos en la carpeta 'documentos'. Súbelos a GitHub para que el bot tenga memoria.")
 
-user_question = st.text_input("Haz una pregunta sobre los documentos universitarios:")
+user_question = st.text_input("Haz una pregunta y te respondere segun los documentos de mi base de datos")
 
 if user_question:
     if not contexto_fijo:
@@ -43,3 +43,4 @@ if user_question:
             st.write(response.text)
         except Exception as e:
             st.error(f"Error: {e}")
+
