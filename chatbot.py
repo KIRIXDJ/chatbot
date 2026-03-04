@@ -5,7 +5,7 @@ import os
 import time
 
 st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
-st.title("📚 UNIROMANA AI-Hub")
+st.title("📚 UNIROMANA")
 
 # Conexión con Gemini 2.5 Flash
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -33,7 +33,7 @@ contexto_fijo = cargar_conocimiento_permanente()
 if not contexto_fijo:
     st.warning("⚠️ No encontré archivos en la carpeta 'documentos'.")
 
-user_question = st.text_input("Haz una pregunta sobre los documentos universitarios:")
+user_question = st.text_input("Haz una pregunta  y te respondere usando los documentos de mi base de datos")
 
 if user_question:
     if not contexto_fijo:
@@ -60,3 +60,4 @@ if user_question:
                     else:
                         st.error(f"Error: {e}")
                         break
+
