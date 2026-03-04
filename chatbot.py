@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import google.generativeai as genai
 from PyPDF2 import PdfReader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
@@ -76,4 +76,5 @@ if user_question:
         response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
         st.markdown(f"**Respuesta:** {response['output_text']}")
     else:
+
         st.warning("Primero sube y procesa los documentos en la barra lateral.")
