@@ -46,7 +46,7 @@ if user_question:
         st.warning("⚠️ El bot está vacío. Primero sube un PDF y dale a 'Procesar y Aprender'.")
     else:
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-pro')
             # Creamos el prompt con el contexto de los PDFs
             prompt_final = f"""
             Eres un asistente académico experto. Utiliza el siguiente contexto para responder la pregunta.
@@ -62,3 +62,4 @@ if user_question:
             st.write(response.text)
         except Exception as e:
             st.error(f"Hubo un error con la IA: {e}")
+
