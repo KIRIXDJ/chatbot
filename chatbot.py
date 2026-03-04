@@ -6,62 +6,57 @@ from PyPDF2 import PdfReader
 st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
 st.title("📚 UNIROMANA AI-Hub")
 
-# 2. Conexión segura con la API Key (Desde los Secrets de Streamlit)
+# 2. Conexión segura con la API Key
 if "GOOGLE_API_KEY" not in st.secrets:
-    st.error("⚠️ Configuración pendiente: Agregue su 'GOOGLE_API_KEY' en los Secrets de Streamlit.")
+    st.error("⚠️ Falta la API Key en los Secrets de Streamlit.")
     st.stop()
 
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
-# 3. Inicializar la memoria de la sesión
+# 3. Inicializar memoria
 if "contexto_pdf" not in st.session_state:
     st.session_state["contexto_pdf"] = ""
 
-# 4. Barra Lateral para Entrenamiento
+# 4. Barra Lateral (Subida de archivos)
 with st.sidebar:
     st.header("Entrenamiento del Bot")
-    st.info("Sube aquí tus reglamentos de UNIROMANA o artículos de Scholar.")
-    uploaded_files = st.file_uploader("Selecciona archivos PDF", type="pdf", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Sube tus PDFs académicos", type="pdf", accept_multiple_files=True)
     process_button = st.button("Procesar y Aprender")
 
-# 5. Lógica de extracción de texto
+# 5. Lógica de procesamiento
 if uploaded_files and process_button:
-    with st.spinner("Leyendo y aprendiendo de los documentos..."):
+    with st.spinner("Procesando documentos con Gemini 2.5..."):
         texto_acumulado = ""
-        try:
-            for file in uploaded_files:
-                pdf_reader = PdfReader(file)
-                for page in pdf_reader.pages:
-                    texto_acumulado += page.extract_text() + "\n"
-            
-            # Guardamos el contenido en la sesión
-            st.session_state["contexto_pdf"] = texto_acumulado
-            st.success("¡Documentos integrados! Ya puedes hacer preguntas.")
-        except Exception as e:
-            st.error(f"Error al leer el archivo: {e}")
+        for file in uploaded_files:
+            pdf_reader = PdfReader(file)
+            for page in pdf_reader.pages:
+                texto_acumulado += page.extract_text() + "\n"
+        
+        st.session_state["contexto_pdf"] = texto_acumulado
+        st.success("¡Documentos integrados con éxito!")
 
-# 6. Chat Principal
-user_question = st.text_input("Hazle una pregunta al bot sobre la información subida:")
+# 6. Chat con modelos actualizados
+user_question = st.text_input("Haz una pregunta sobre los documentos:")
 
 if user_question:
     if not st.session_state["contexto_pdf"]:
-        st.warning("⚠️ El bot no tiene datos. Primero sube un PDF en la izquierda y presiona 'Procesar'.")
+        st.warning("⚠️ Primero sube un PDF y presiona 'Procesar'.")
     else:
         try:
-            # Usamos gemini-1.5-flash por ser el más rápido y ligero
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # Usamos el modelo 2.5 Flash que viste en tu lista
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
-            prompt_final = f"""
-            Actúa como un asistente académico para un estudiante de UNIROMANA.
-            Responde basándote exclusivamente en este contexto:
-            {st.session_state['contexto_pdf']}
+            prompt = f"Contexto: {st.session_state['contexto_pdf']}\n\nPregunta: {user_question}"
+            response = model.generate_content(prompt)
             
-            Pregunta del usuario: {user_question}
-            """
-            
-            response = model.generate_content(prompt_final)
-            st.markdown("### Respuesta del Bot:")
+            st.markdown("### Respuesta:")
             st.write(response.text)
             
         except Exception as e:
-            st.error(f"Error en la respuesta de la IA: {e}")
+            # Si falla, intentamos con Gemini 3 como respaldo
+            try:
+                model_alt = genai.GenerativeModel('gemini-3')
+                response = model_alt.generate_content(prompt)
+                st.write(response.text)
+            except:
+                st.error(f"Error de conexión: {e}. Revisa que el modelo esté disponible en tu región.")
