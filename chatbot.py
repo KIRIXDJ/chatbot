@@ -26,7 +26,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("📚 MarceloV46 - UNIROMANA AI-Hub")
+st.title("📚 MarceloV46")
 
 # Conexión con Gemini 2.5 Flash
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -87,3 +87,4 @@ if user_question:
                     else:
                         st.error(f"Error: {e}")
                         break
+
