@@ -11,32 +11,11 @@ st.set_page_config(page_title="UNIROMANA AI-Hub", layout="wide")
 st.markdown(
     """
     <style>
-    /* Fondo principal */
-    .stApp {
-        background-color: #ffffff !important;
-    }
-    
-    /* Forzar negro en TODO tipo de texto y contenedores */
-    .stApp, .stApp p, .stApp li, .stApp span, .stApp label, .stApp div {
-        color: #000000 !important;
-    }
-
-    /* Títulos en negro */
-    h1, h2, h3 {
-        color: #000000 !important;
-    }
-
-    /* Arreglo específico para las listas (donde se ve el texto claro) */
-    ul, ol, li {
-        color: #000000 !important;
-    }
-
-    /* Asegurar que el texto dentro del markdown de respuesta sea negro */
-    .stMarkdown div p {
-        color: #000000 !important;
-    }
-
-    /* Caja de entrada de texto */
+    .stApp { background-color: #ffffff !important; }
+    .stApp, .stApp p, .stApp li, .stApp span, .stApp label, .stApp div { color: #000000 !important; }
+    h1, h2, h3 { color: #000000 !important; }
+    ul, ol, li { color: #000000 !important; }
+    .stMarkdown div p { color: #000000 !important; }
     .stTextInput input {
         background-color: #f0f2f6 !important;
         color: #000000 !important;
@@ -47,7 +26,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("📚 MarceloV46")
+st.title("📚 MarceloV46 - UNIROMANA AI-Hub")
 
 # Conexión con Gemini 2.5 Flash
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -66,8 +45,7 @@ def cargar_conocimiento_permanente():
                         texto_base += page.extract_text() + "\n"
                 except Exception as e:
                     st.error(f"Error leyendo {archivo}: {e}")
-    
-    # Límite de seguridad para tokens (aprox 150k tokens)
+    # Límite de seguridad para tokens 
     return texto_base[:600000] 
 
 contexto_fijo = cargar_conocimiento_permanente()
@@ -83,8 +61,7 @@ if user_question:
     else:
         with st.spinner("Buscando en los archivos de UNIROMANA..."):
             model = genai.GenerativeModel('gemini-2.5-flash')
-            
-            # Tu prompt original con identidad
+            # Identidad del asistente de UNIROMANA 
             prompt = f"Eres un asistente de UNIROMANA. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
             
             intentos = 0
@@ -93,6 +70,14 @@ if user_question:
                     response = model.generate_content(prompt)
                     st.markdown("### Respuesta:")
                     st.write(response.text)
+                    
+                    # --- LÓGICA DE RECOMENDACIÓN MULTIMEDIA (Módulo de Gestión de Contenidos) ---
+                    # Basado en los requisitos de producción multimedia y traducción 
+                    ayuda_multimedia = ["traduccion", "audio", "video", "tutorial", "apa", "resumen", "ingles"]
+                    if any(palabra in user_question.lower() for palabra in ayuda_multimedia):
+                        st.info("💡 **Tip de UNIROMANA:** He detectado que buscas ayuda con recursos multimedia, traducción o redacción. "
+                                "Te recomendamos usar **NotebookLM** de Google para estas tareas. "
+                                "Consulta nuestro tutorial detallado en la sección de 'Recursos' del blog.")
                     break 
                 except Exception as e:
                     if "429" in str(e):
@@ -102,5 +87,3 @@ if user_question:
                     else:
                         st.error(f"Error: {e}")
                         break
-
-
