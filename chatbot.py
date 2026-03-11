@@ -53,7 +53,7 @@ contexto_fijo = cargar_conocimiento_permanente()
 if not contexto_fijo:
     st.warning("⚠️ No encontré archivos en la carpeta 'documentos'.")
 
-user_question = st.text_input("Haz una pregunta y te respondere segun mi base de datos")
+user_question = st.text_input("Haz una pregunta y te respondere segun mi base de datos, solo una pregunta por minuto por favor")
 
 if user_question:
     if not contexto_fijo:
@@ -87,5 +87,6 @@ if user_question:
                     else:
                         st.error(f"Error: {e}")
                         break
+
 
 
