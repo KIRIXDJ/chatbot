@@ -26,7 +26,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("📚 MarceloV47")
+st.title("📚 ElyV1")
 
 # Conexión con Gemini 2.5 Flash
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -53,7 +53,7 @@ contexto_fijo = cargar_conocimiento_permanente()
 if not contexto_fijo:
     st.warning("⚠️ No encontré archivos en la carpeta 'documentos'.")
 
-user_question = st.text_input("Haz una pregunta y te respondere segun mi base de datos, solo una pregunta por minuto por favor")
+user_question = st.text_input("Haz una pregunta y te respondere segun mi base de datos")
 
 if user_question:
     if not contexto_fijo:
@@ -62,7 +62,7 @@ if user_question:
         with st.spinner("Buscando en los archivos de UNIROMANA..."):
             model = genai.GenerativeModel('gemini-2.5-flash')
             # Identidad del asistente de UNIROMANA 
-            prompt = f"Eres un asistente de UNIROMANA. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
+            prompt = f"Eres una asistente. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
             
             intentos = 0
             while intentos < 3:
@@ -87,6 +87,3 @@ if user_question:
                     else:
                         st.error(f"Error: {e}")
                         break
-
-
-
