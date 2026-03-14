@@ -62,7 +62,7 @@ if user_question:
         with st.spinner("Buscando en los archivos de UNIROMANA..."):
             model = genai.GenerativeModel('gemini-2.5-flash')
             # Identidad del asistente de UNIROMANA 
-            prompt = f"Eres una asistente. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
+            prompt = f"Eres una asistente llamada Ely. Usa este contexto: {contexto_fijo}\n\nPregunta: {user_question}"
             
             intentos = 0
             while intentos < 3:
